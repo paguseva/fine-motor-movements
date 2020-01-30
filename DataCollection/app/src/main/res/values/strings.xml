@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Data Collection</string>
+    <string name="placeholder">No action</string>
+    <string name="tutorial_link"><a href="https://drive.google.com/a/179.ru/file/d/1yzM_4LqYBw5IpwBSs6_UXfjx7XU6ynvV/view?usp=drivesdk">Tutorial</a></string>
+
+    <string name="resume">Resume</string>
+    <string name="calibrate">Calibrate</string>
+    <string name="seq">Sequence</string>
+    <string name="one_act">Single Action</string>
+    <string name="clear">Clear</string>
+    <string name="start">Resume</string>
+    <string name="stop">Pause</string>
+    <string name="record">Record</string>
+</resources>

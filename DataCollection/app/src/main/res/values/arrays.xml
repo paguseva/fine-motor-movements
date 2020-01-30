@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="actions_array">
+        <item>vertical-x-shake</item>
+        <item>horizontal-x-shake</item>
+        <item>vertical-y-shake</item>
+        <item>horizontal-y-shake</item>
+        <item>clockwise-rotation</item>
+        <item>counterclockwise-rotation</item>
+        <item>horizontal-rotation</item>
+        <item>flip</item>
+        <item>eight</item>
+        <item>infinity</item>
+    </string-array>
+</resources>
