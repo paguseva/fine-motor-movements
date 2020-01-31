@@ -10,14 +10,11 @@ import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import kotlinx.android.synthetic.main.activity_calibration.calButton
-import kotlinx.android.synthetic.main.activity_calibration.seqBtn
-import kotlinx.android.synthetic.main.activity_calibration.actBtn
-import kotlinx.android.synthetic.main.activity_calibration.timer
+import kotlinx.android.synthetic.main.activity_calibration.*
 
 
 class Calibration : AppCompatActivity() {
-    private val calibrationTime = 10L
+    private var calibrationTime = 0L
     private var accStd = 0f
     private var gyroStd = 0f
 
@@ -39,7 +36,7 @@ class Calibration : AppCompatActivity() {
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK))
+            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
             vibrator.vibrate(100)
         }
@@ -52,7 +49,9 @@ class Calibration : AppCompatActivity() {
         val gyroData = ArrayList <FloatArray> (0)
         val accData = ArrayList <FloatArray> (0)
 
-        calButton.setOnClickListener(object: View.OnClickListener, SensorEventListener {
+        calibrationTime = getResources().getInteger(R.integer.calibrationTime).toLong()
+
+        calBtn.setOnClickListener(object: View.OnClickListener, SensorEventListener {
             var sensorManager : SensorManager ?= null
             private var accSensor: Sensor ?= null
             private var gyroSensor: Sensor ?= null
@@ -63,7 +62,7 @@ class Calibration : AppCompatActivity() {
             }
 
             override fun onClick(v: View?) {
-                calButton.isEnabled = false
+                calBtn.isEnabled = false
                 timer.text = calibrationTime.toString()
 
                 sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -81,7 +80,7 @@ class Calibration : AppCompatActivity() {
                     }
 
                     override fun onFinish() {
-                        timer.text = "Done!"
+                        timer.text = getResources().getString(R.string.completed)
 
                         stopListening()
 
@@ -91,7 +90,7 @@ class Calibration : AppCompatActivity() {
                         Log.i("Calibrate", "Calibration complete: accStd=$accStd, gyroStd=$gyroStd")
                         vibrate()
 
-                        calButton.isEnabled = true
+                        calBtn.isEnabled = true
                     }
                 }
                 timer.start()
@@ -101,7 +100,7 @@ class Calibration : AppCompatActivity() {
             }
 
             override fun onSensorChanged(event: SensorEvent) {
-                if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
+                if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION)
                     accData.add(event.values)
                 else
                     gyroData.add(event.values)
@@ -109,14 +108,14 @@ class Calibration : AppCompatActivity() {
         })
 
         seqBtn.setOnClickListener {
-            val intent = Intent(this@Calibration, MainActivity::class.java)
+            val intent = Intent(this@Calibration, ActionSequence::class.java)
             intent.putExtra("gyroStd", gyroStd)
             intent.putExtra("accStd", accStd)
             startActivity(intent)
         }
 
         actBtn.setOnClickListener {
-            val intent = Intent(this@Calibration, SingleActionActivity::class.java)
+            val intent = Intent(this@Calibration, SingleAction::class.java)
             intent.putExtra("gyroStd", gyroStd)
             intent.putExtra("accStd", accStd)
             startActivity(intent)

@@ -7,7 +7,7 @@
     tools:context=".Calibration">
 
     <Button
-        android:id="@+id/calButton"
+        android:id="@+id/calBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="true"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/calButton"
+        app:layout_constraintBottom_toTopOf="@+id/calBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

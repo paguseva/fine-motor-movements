@@ -11,4 +11,6 @@
     <string name="start">Resume</string>
     <string name="stop">Pause</string>
     <string name="record">Record</string>
+
+    <string name="completed">Done!</string>
 </resources>
