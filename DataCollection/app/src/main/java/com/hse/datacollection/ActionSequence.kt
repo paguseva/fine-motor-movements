@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import java.io.FileOutputStream
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_action_sequence.*
 import java.io.File
 import kotlin.math.sqrt
 import kotlin.random.Random
 
 
-class MainActivity : AppCompatActivity(), SensorEventListener {
+class ActionSequence: AppCompatActivity(), SensorEventListener {
     private lateinit var mainHandler:Handler
     private var sensorManager : SensorManager ?= null
     private var accSensor: Sensor ?= null
@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var accSteps = 0
     private var defaultActionTime = 0L
 
-    private val gyroFileName = "gyro_data_${java.util.UUID.randomUUID()}.csv"
-    private val accFileName = "acc_data_${java.util.UUID.randomUUID()}.csv"
+    private val gyroFileName = "gyro_data.csv"
+    private val accFileName = "acc_data.csv"
 
     private lateinit var movementLabels:Array<String>
 
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         gyroSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_action_sequence)
 
         mainHandler = Handler(Looper.getMainLooper())
 

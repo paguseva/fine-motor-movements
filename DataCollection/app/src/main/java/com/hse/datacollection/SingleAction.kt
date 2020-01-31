@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_single_action.*
 import java.io.File
 import java.io.FileOutputStream
 
-class SingleActionActivity : AppCompatActivity() {
+class SingleAction : AppCompatActivity() {
     private var gyroStd = 0f
     private var accStd = 0f
     private var gyroSteps = 0
@@ -70,8 +70,8 @@ class SingleActionActivity : AppCompatActivity() {
                 sensorManager!!.registerListener(this, gyroSensor,
                     SensorManager.SENSOR_DELAY_GAME)
 
-                accFile = File(directory, "single_action_acc_${actions_spinner.getSelectedItem()}_${java.util.UUID.randomUUID()}.csv")
-                gyroFile = File(directory, "single_action_gyro_${actions_spinner.getSelectedItem()}_${java.util.UUID.randomUUID()}.csv")
+                accFile = File(directory, "single_action_acc_${actions_spinner.getSelectedItem()}.csv")
+                gyroFile = File(directory, "single_action_gyro_${actions_spinner.getSelectedItem()}.csv")
 
                 val timer = object: CountDownTimer(actionTime * 1000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
