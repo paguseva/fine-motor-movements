@@ -1,0 +1,10 @@
+clockwise-rotation
+counterclockwise-rotation
+eight
+flip
+horizontal-rotation
+horizontal-x-shake
+horizontal-y-shake
+infinity
+vertical-x-shake
+vertical-y-shake
