@@ -74,8 +74,8 @@ class ActionSequence: AppCompatActivity(), SensorEventListener {
 
         gyroStd = intent.getFloatExtra("gyroStd", 0f)
         accStd = intent.getFloatExtra("accStd", 0f)
-        defaultActionTime = getResources().getInteger(R.integer.minActionTime).toLong()
-        movementLabels = getResources().getStringArray(R.array.actions_array)
+        defaultActionTime = resources.getInteger(R.integer.minActionTime).toLong()
+        movementLabels = resources.getStringArray(R.array.actions_array)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         gyroSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -83,7 +83,7 @@ class ActionSequence: AppCompatActivity(), SensorEventListener {
 
         mainHandler = Handler(Looper.getMainLooper())
 
-        tutorial.setMovementMethod(LinkMovementMethod.getInstance())
+        tutorial.movementMethod = LinkMovementMethod.getInstance()
 
         val directory = getExternalFilesDir(null)
         accFile = File(directory, accFileName)
@@ -91,13 +91,13 @@ class ActionSequence: AppCompatActivity(), SensorEventListener {
 
         actionBtn.setOnClickListener {
             actionBtn.isEnabled = false
-            if (actionBtn.text == getResources().getString(R.string.stop)) {
+            if (actionBtn.text == resources.getString(R.string.stop)) {
                 pause()
-                actionBtn.text = getResources().getString(R.string.start)
-                output.text = getResources().getString(R.string.placeholder)
+                actionBtn.text = resources.getString(R.string.start)
+                output.text = resources.getString(R.string.placeholder)
             } else {
                 resume()
-                actionBtn.text = getResources().getString(R.string.stop)
+                actionBtn.text = resources.getString(R.string.stop)
             }
             actionBtn.isEnabled = true
         }
@@ -116,13 +116,13 @@ class ActionSequence: AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        if (actionBtn.text == getResources().getString(R.string.stop))
+        if (actionBtn.text == resources.getString(R.string.stop))
             resume()
     }
 
     override fun onPause() {
         super.onPause()
-        if (actionBtn.text == getResources().getString(R.string.start))
+        if (actionBtn.text == resources.getString(R.string.start))
             pause()
     }
 
@@ -133,7 +133,7 @@ class ActionSequence: AppCompatActivity(), SensorEventListener {
         lateinit var file:File
         val std:Float
         val steps:Double
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+        if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
             file = accFile
             steps = (++accSteps).toDouble()
             std = accStd

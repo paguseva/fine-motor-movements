@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_single_action.*
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.sqrt
 
 class SingleAction : AppCompatActivity() {
     private var gyroStd = 0f
@@ -36,10 +37,10 @@ class SingleAction : AppCompatActivity() {
 
         gyroStd = intent.getFloatExtra("gyroStd", 0f)
         accStd = intent.getFloatExtra("accStd", 0f)
-        actionTime = getResources().getInteger(R.integer.minActionTime).toLong()
+        actionTime = resources.getInteger(R.integer.minActionTime).toLong()
         setContentView(R.layout.activity_single_action)
 
-        tutorial.setMovementMethod(LinkMovementMethod.getInstance())
+        tutorial.movementMethod = LinkMovementMethod.getInstance()
 
         directory = getExternalFilesDir(null)
 
@@ -70,8 +71,8 @@ class SingleAction : AppCompatActivity() {
                 sensorManager!!.registerListener(this, gyroSensor,
                     SensorManager.SENSOR_DELAY_GAME)
 
-                accFile = File(directory, "single_action_acc_${actions_spinner.getSelectedItem()}.csv")
-                gyroFile = File(directory, "single_action_gyro_${actions_spinner.getSelectedItem()}.csv")
+                accFile = File(directory, "single_action_acc_${actions_spinner.selectedItem}.csv")
+                gyroFile = File(directory, "single_action_gyro_${actions_spinner.selectedItem}.csv")
 
                 val timer = object: CountDownTimer(actionTime * 1000, 1000) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -100,7 +101,7 @@ class SingleAction : AppCompatActivity() {
                 lateinit var file: File
                 val std:Float
                 val steps:Double
-                if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+                if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
                     file = accFile
                     steps = (++accSteps).toDouble()
                     std = accStd
@@ -110,11 +111,11 @@ class SingleAction : AppCompatActivity() {
                     std = gyroStd
                 }
                 val result = arrayOf(
-                    event.values[0] - std * Math.sqrt(steps),
-                    event.values[1] - std * Math.sqrt(steps),
-                    event.values[2] - std * Math.sqrt(steps)
+                    event.values[0] - std * sqrt(steps),
+                    event.values[1] - std * sqrt(steps),
+                    event.values[2] - std * sqrt(steps)
                 )
-                val data = "${result[0]},${result[1]},${result[2]},${actions_spinner.getSelectedItem()}"
+                val data = "${result[0]},${result[1]},${result[2]},${actions_spinner.selectedItem}"
                 try {
                     FileOutputStream(file, true).bufferedWriter().use { writer ->
                         writer.appendln(data)

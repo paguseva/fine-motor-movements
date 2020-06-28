@@ -111,6 +111,7 @@ class Calibration : AppCompatActivity() {
             val intent = Intent(this@Calibration, ClassifierActivity::class.java)
             intent.putExtra("gyroStd", gyroStd)
             intent.putExtra("accStd", accStd)
+            intent.putExtra("serverURL", serverLink.text.toString())
             startActivity(intent)
         }
     }

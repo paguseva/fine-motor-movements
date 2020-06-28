@@ -48,8 +48,8 @@ public class ClassifierActivity extends AppCompatActivity implements SensorEvent
   private Sensor gyroSensor = null;
   private boolean is_processing = false;
 
-  private TextView gestureName1, gestureName2, gestureName3;
-  private TextView gestureProb1, gestureProb2, gestureProb3;
+  private TextView[] gestureNames = new TextView[3];
+  private TextView[] gestureProbs = new TextView[3];
 
   private MediaPlayer player;
 
@@ -59,7 +59,8 @@ public class ClassifierActivity extends AppCompatActivity implements SensorEvent
     super.onCreate(null);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    samples = new ArrayDeque<float[]>(91);
+    samples = new ArrayDeque<>(91);
+
     gyroStd = getIntent().getFloatExtra("gyroStd", 0);
     accStd = getIntent().getFloatExtra("accStd", 0);
     maxSampleSize = getResources().getInteger(R.integer.maxSampleSize);
@@ -71,13 +72,13 @@ public class ClassifierActivity extends AppCompatActivity implements SensorEvent
 
     setContentView(R.layout.activity_classifier);
 
-    gestureName1 = findViewById(R.id.gestureName1);
-    gestureName2 = findViewById(R.id.gestureName2);
-    gestureName3 = findViewById(R.id.gestureName3);
+    gestureNames[0] = findViewById(R.id.gestureName1);
+    gestureNames[1] = findViewById(R.id.gestureName2);
+    gestureNames[2] = findViewById(R.id.gestureName3);
 
-    gestureProb1 = findViewById(R.id.gestureProb1);
-    gestureProb2 = findViewById(R.id.gestureProb2);
-    gestureProb3 = findViewById(R.id.gestureProb3);
+    gestureProbs[0] = findViewById(R.id.gestureProb1);
+    gestureProbs[1] = findViewById(R.id.gestureProb2);
+    gestureProbs[2] = findViewById(R.id.gestureProb3);
   }
 
   @Override
@@ -167,66 +168,48 @@ public class ClassifierActivity extends AppCompatActivity implements SensorEvent
     samples.addLast(sample);
     if (samples.size() >= maxSampleSize) {
       LOGGER.d("Collected enough samples to classify a gesture");
-      float[][] input = samples.toArray(new float[maxSampleSize][6]);
+      float[][] input = samples.toArray(new float[0][6]);
       samples.removeFirst();
       detectionCount++;
       if (detectionCount % detectionFreq == 1 && !is_processing)
-        runInBackground(
-          new Runnable() {
-            @Override
-            public void run() {
-              is_processing = true;
-              if (classifier != null) {
-                List <Classifier.Recognition> results = classifier.recognizeGesture(input);
-                LOGGER.v("Detect: %s", results);
+        runInBackground(() -> {
+          is_processing = true;
+          if (classifier != null) {
+            List <Classifier.Recognition> results = classifier.recognizeGesture(input);
+            LOGGER.v("Detect: %s", results);
 
-                runOnUiThread(
-                  new Runnable() {
-                    @Override
-                    public void run() {
-                      if (results != null && results.size() >= 3) {
-                        Classifier.Recognition rec = results.get(0);
-                        if (rec != null) {
-                          if (rec.getTitle() != null) {
-                            gestureName1.setText(rec.getTitle());
-                            try {
-                              AssetFileDescriptor afd = getAssets().openFd(
-                                      rec.getTitle() + ".mp3");
-                              LOGGER.i(rec.getTitle() + ".mp3");
-                              player.reset();
-                              player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                              player.prepare();
-                              player.start();
-                            } catch (IOException e) {
-                              LOGGER.e(e, "IO Unable to play mp3 for " + rec.getTitle());
-                            } catch (IllegalArgumentException e) {
-                              LOGGER.e(e, "Illegal Unable to play mp3 for " + rec.getTitle());
-                            }
-                          }
-                          if (rec.getConfidence() != null) gestureProb1.setText(
-                            String.format("%.2f", rec.getConfidence())
-                          );
-                        }
-                        rec = results.get(1);
-                        if (rec != null) {
-                          if (rec.getTitle() != null) gestureName2.setText(rec.getTitle());
-                          if (rec.getConfidence() != null) gestureProb2.setText(
-                            String.format("%.2f", rec.getConfidence())
-                          );
-                        }
-                        rec = results.get(2);
-                        if (rec != null) {
-                          if (rec.getTitle() != null) gestureName3.setText(rec.getTitle());
-                          if (rec.getConfidence() != null) gestureProb3.setText(
-                            String.format("%.2f", rec.getConfidence())
-                          );
+            runOnUiThread(() -> {
+              if (results != null && results.size() >= 3) {
+                for (int i = 0; i < 3; ++i) {
+                  Classifier.Recognition rec = results.get(i);
+                  if (rec != null) {
+                    if (rec.getTitle() != null) {
+                      gestureNames[i].setText(rec.getTitle());
+                      if (i != 0) {
+                        try {
+                          String bestGuessName = rec.getTitle().replace("-", "_");
+                          LOGGER.i("Playing " + bestGuessName);
+                          int resID = getResources().getIdentifier(bestGuessName, "raw", getPackageName());
+                          AssetFileDescriptor afd = getResources().openRawResourceFd(resID);
+                          player.reset();
+                          player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                          player.prepare();
+                          player.start();
+                        } catch (IOException e) {
+                          LOGGER.e(e, "IO Unable to play mp3 for " + rec.getTitle());
+                        } catch (IllegalArgumentException e) {
+                          LOGGER.e(e, "Illegal Unable to play mp3 for " + rec.getTitle());
                         }
                       }
                     }
-                });
+                    if (rec.getConfidence() != null)
+                      gestureProbs[i].setText(String.format("%.2f", rec.getConfidence()));
+                  }
+                }
               }
-              is_processing = false;
-            }
+            });
+          }
+          is_processing = false;
         });
     }
   }
@@ -241,4 +224,4 @@ public class ClassifierActivity extends AppCompatActivity implements SensorEvent
       handler.post(r);
     }
   }
-}
+  }
