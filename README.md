@@ -25,6 +25,6 @@
 
 ### Дополнительно
 Подробности о проекте можно найти в [отчете](https://drive.google.com/file/d/1oeXW1D8uMKp7J27jNC0ZLyQ_MPPYRSgk/view?usp=sharing). Остальные части проекта лежат в следующих репозиториях:
-    * [Ноутбуки с анализом данных и обучением модели](https://github.com/nd0761/movement_recognition)
-    * [Визуализация данных](https://github.com/nd0761/acc_gyro_visualization)
-    * [Сервер для обработки данных](https://github.com/nd0761/local_server)
+* [Ноутбуки с анализом данных и обучением модели](https://github.com/nd0761/movement_recognition)
+* [Визуализация данных](https://github.com/nd0761/acc_gyro_visualization)
+* [Сервер для обработки данных](https://github.com/nd0761/local_server)
